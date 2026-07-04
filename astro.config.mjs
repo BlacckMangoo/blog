@@ -8,18 +8,23 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
-// https://astro.build/config
 export default defineConfig({
-   site: "https://blacckmangoo.github.io",
-  base: "/blog/",
-	markdown: {
-		syntaxHighlighting: 'shiki',
-	},
-	integrations: [
-		react(),
-		mdx({
-			remarkPlugins: [remarkGfm, remarkMath],
-			rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypeKatex],
-		}),
-	],
+  site: 'https://blacckmangoo.github.io',
+  base: '',
+
+  markdown: {
+    syntaxHighlighting: 'shiki',
+  },
+
+  integrations: [
+    react(),
+    mdx({
+      remarkPlugins: [remarkGfm, remarkMath],
+      rehypePlugins: [
+        rehypeSlug,
+        rehypeAutolinkHeadings,
+        rehypeKatex,
+      ],
+    }),
+  ],
 });
