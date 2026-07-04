@@ -10,7 +10,7 @@ import remarkMath from 'remark-math';
 
 export default defineConfig({
   site: 'https://blacckmangoo.github.io',
-  base: '',
+  base: '/blog/',
 
   markdown: {
     syntaxHighlighting: 'shiki',
