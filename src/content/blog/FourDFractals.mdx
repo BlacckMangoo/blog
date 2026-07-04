@@ -1,0 +1,310 @@
+---
+title: "4D Fractals Using the Chaos Game Algorithm"
+description: "From simple rules to infinite complexity: using fractals as a window into the fourth dimension."
+pubDate: 2025-04-14
+tags:
+  - mathematics
+---
+
+import Math from "../../components/Math.astro";
+import Callout from "../../components/Callout.astro";
+import Figure from "../../components/Figure.astro";
+import chaos from "../../assets/chaos.webp";
+import fractals from "../../assets/fractaks.webp";
+import tetra from "../../assets/sierTetra.jpg";
+import mercator from "../../assets/mercator.webp";
+import earthmap from "../../assets/earthmap.webp";
+import siera from "../../assets/fdsiera.webp";
+import sierab from "../../assets/fdsierb.webp";
+
+# Exploring the 4th Dimension Through Fractals
+
+What I really find beautiful about mathematics is how simplicity leads to beautiful results.
+
+So let's explore the world of 4 dimensions through the lens of fractals.
+
+I was just looking for some programming projects when I came across this algorithm.
+
+<Callout title="The Chaos Game Algorithm" tone="info"/>
+
+It's deceptively simple.
+
+You mark three 2D points, say A, B, and C, to form an equilateral triangle using x, y coordinates, then choose any random point on the plane.
+
+A certain set of points which satisfies these properties is, for example,
+
+<Math
+  
+  formula={`
+    \\begin{aligned}
+    \\text{Point 1: } & (1, 0) \\\\
+    \\text{Point 2: } & \\left(-\\frac{1}{2}, \\frac{\\sqrt{3}}{2}\\right) \\\\
+    \\text{Point 3: } & \\left(-\\frac{1}{2}, -\\frac{\\sqrt{3}}{2}\\right)
+    \\end{aligned}
+  `}
+/>
+
+We can verify this using the distance formula for 2D spaces.
+
+Then proceed to mark a third point at the midpoint of the chosen random point and any of the points again randomly chosen from A, B, or C, using the midpoint formula for 2-dimensional space.
+
+And infinitely repeat this process by placing a point again on the resultant point and a randomly chosen point from the three vertices of the triangle.
+
+https://www.youtube.com/watch?v=kbKtFN71Lfs&t=458s
+
+Check out this video for a complete explanation.
+
+Now let's apply this to our triangle.
+
+At first it looks like chaos, but slowly you see a pattern start to emerge.
+
+
+<Figure
+  src={chaos}
+  caption="The Chaos Game Algorithm applied to a triangle"
+/>
+What if we arrange the points collinearly?
+
+What if we start with a square?
+
+For those of you who are curious, I leave those questions for you to answer as a programming exercise.
+
+Tweaking these sets of initial points and adding more restrictions gives rise to even more interesting fractals. Go ahead and try experimenting.
+
+Here are some examples.
+
+<Figure
+  src={fractals}
+/>
+Notice the element of randomness in this algorithm, yet it produces beautiful deterministic patterns. To be honest, I found it very strange at first, and you know what's crazy?
+
+It forms these fractals in infinite dimensions, but before getting too ahead of ourselves:
+
+First, let's extend this simple algorithm to three dimensions.
+
+That's right.
+
+Instead of a triangle we take a regular tetrahedron, which is basically just a triangular pyramid with equal sides, and repeat the same process.
+And again, from chaos emerges a Sierpinski tetrahedron. These infinitely repeating self-similar patterns that you see forming are called fractals.
+You see them emerge everywhere in nature, from tiny snowflakes to entire galaxies.
+<Figure
+  src={tetra}
+  caption="Sierpinski Tetrahedron"  
+/>
+
+But now begins the fun part.
+
+The cool thing with math is you aren't bound by the laws of reality or the limits of human perception. Let's dig deeper.
+
+So we are going to step it up a notch and extend this same pattern to 4 dimensions.
+
+For that we need to first examine a few things.
+
+We experience the world within our senses. We experience a 3D world which is then projected onto the 2D retina.
+
+Slowly, through evolution, our brain has figured out certain tricks.
+
+Like shadows, foreshortening, and perspective, through which it makes sense of the 3D world and its depth even though we are limited to a 2D retina.
+
+Artists for millennia have figured out techniques to fool the brain; the 2D picture they are looking at actually feels 3D.
+
+But sadly, our brain has no frame of reference to perceive the fourth dimension.
+
+It understands a 3-dimensional world through a 2D retina, after all.
+
+First of all, let's start with finding the 4-dimensional equivalent of a tetrahedron.
+
+So let's analyse what we just did earlier.
+
+In 2 dimensions, we defined an equilateral triangle using two coordinates: x, y.
+By applying the Euclidean distance formula, we ensure that the lengths of all three sides are the same, where x1, y1 and x2, y2 are the corresponding points on the triangle.
+
+Moving to 3 dimensions, we use three coordinates: x, y, z.
+Again, applying the distance formula ensures the sides are equal, giving us a tetrahedron.
+
+But here's the exciting part:
+We're not limited to these dimensions.
+
+For 2-dimensional space, the Pythagorean theorem can be used to calculate this distance. For the two points \(p\) and \(q\), with coordinates \((x_1, y_1)\) and \((x_2, y_2)\) on a 2D coordinate system, the Euclidean distance is determined as:
+
+<Math
+  block
+  formula={`
+    d_{Eucl}(p,q)
+    =
+    \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}
+  `}
+/>
+
+> *"There is no royal road to geometry."*  
+> — Euclid
+
+For 3-dimensional space, the Euclidean distance between the two points \(p\) and \(q\) with coordinates \((x_1, y_1, z_1)\) and \((x_2, y_2, z_2)\) is determined as:
+
+<Math
+  block
+  formula={`
+    d_{Eucl}(p,q)
+    =
+    \\sqrt{
+      (x_2-x_1)^2 +
+      (y_2-y_1)^2 +
+      (z_2-z_1)^2
+    }
+  `}
+/>
+
+Generalizing this to \(n\)-dimensional Euclidean space, we get the distance \(d(p,q)\) between two points:
+
+<Math
+  block
+  formula={`
+    p = (p_1, p_2, \\ldots, p_n)
+  `}
+/>
+
+<Math
+  block
+  formula={`
+    q = (q_1, q_2, \\ldots, q_n)
+  `}
+/>
+
+<Math
+  block
+  formula={`
+    \\begin{aligned}
+    d_{Eucl}(p,q)
+    &= \\sqrt{
+      (q_1-p_1)^2 +
+      (q_2-p_2)^2 +
+      \\cdots +
+      (q_n-p_n)^2
+    } \\\\
+    &= \\sqrt{
+      \\sum_{i=1}^{n}
+      (q_i-p_i)^2
+    }
+    \\end{aligned}
+  `}
+/>
+
+
+The midpoint of a segment in *n*-dimensional space whose endpoints are
+<Math formula="A = (a_1, a_2, \dots, a_n)" /> and <Math formula="B = (b_1, b_2, \dots, b_n)" /> is given by
+
+<Math formula="\frac{A+B}{2}" block />
+
+That is, the *i*th coordinate of the midpoint (*i* = 1, 2, ..., *n*) is
+
+<Math formula="\frac{a_i+b_i}{2}" block />
+
+Both of these formulas have been derived by extending the patterns from 2D and 3D spaces to an abstract world of *n*-dimensional Euclidean space.
+
+Similarly,
+
+In 4 dimensions, we can define a shape with four coordinates: x, y, z, w.
+.
+
+With the following coordinates:
+
+<Math formula="(1,\,1,\,1,\,-1)"  />
+<Math formula="(1,\,-1,\,-1,\,-1)"  />
+<Math formula="(-1,\,1,\,-1,\,-1)"  />
+<Math formula="(-1,\,-1,\,1,\,-1)"  />
+
+We can apply the same distance formula to verify whether it satisfies the property of equal sides, and voilà:
+
+It's the 4-dimensional equivalent of a tetrahedron.
+
+Some of you may be more comfortable with this strange idea of extending the Euclidean formula to any *n*-dimensional space.
+
+To all of those who are skeptical, the thing with math is that you just follow the patterns and see where it takes you. For now, I would recommend you to just follow the patterns and follow beauty to see where it guides you.
+
+We can take this abstract 4D figure and apply the same Chaos Game algorithm to it.
+
+Pick a random point in 4D space.
+
+Mark the 5 points of a 4D tetrahedron in 4D coordinates.
+
+Choose a random vertex of the 4-simplex.
+
+Mark the midpoint.
+
+Now, I know what you're thinking:
+
+That midpoint that we just found is in 4 dimensions too, so how the heck do we visualise it?
+How can we see something that's 4-dimensional if we're stuck in 3D?
+
+This is where the beauty of math and art intersect.
+Think about shadows.
+
+Imagine yourself as a 2-dimensional being, living on a flat plane, and you cast light on a 2D object.
+What would you see?
+
+A point shadow.
+
+Why?
+
+Because a 2-dimensional object, like a line, casts a 1-dimensional shadow. To you, that shadow looks like just a point.
+
+Now, again, let's extend this idea to 3D.
+
+As 3-dimensional beings, what do we see when we look at an image of a cube on a 2D screen?
+
+We're looking at its 2D shadow, not the cube itself.
+
+As we discussed earlier, your brain uses tricks - perspective, foreshortening, and shading - to interpret this 2D projection of the 3D object.
+
+By now, you might have started seeing an idea here: we try to find patterns in 2nd and 3rd dimensions and just blindly trust the math and extend it to 4D.
+
+So ,
+What would shadow of a 4 d object look like , if we follow the pattern it should create a 3d shadow which could be projected on a 3d space
+And there it is , a way for us to visualise the 4 dimensional fractal we just generated
+Now the question is How do we cast its shadow , or in other worlds project it onto the 3d plane
+Every time we project an object from n-dimensions onto a lower dimension, we lose some information.what I mean by that is that you can not infer every property of an n dimensional object while looking at its n-1 dimensional projection
+
+Like when you look at a cube projected on a 2d screen you can not see all of its edges at once for example as they get hidden by the faces in front of them
+
+This is why There are tons of ways of projection
+But each projection system is designed to preserve different aspects of the image.
+One case where we encounter a similar problem is maps where we need to project an entire 3d spherical earth onto a 2d map
+Different projection techniques lead to different results , each giving us some unique insight about the 3d object .
+
+<Figure
+  src={earthmap}
+    caption="A stereographic projection of the Earth, which preserves angles and shapes but distorts areas."
+/>
+<Figure
+  src={mercator}
+    caption="A Mercator projection of the Earth, which preserves angles and shapes but distorts areas, especially near the poles."
+/>
+
+now the math involved in these is out of scope of this article , for now just think of it as an formula which takes 3 dimensional inputs and spits an 2 dimensional input
+
+While wrapping our minds around the 4th dimensions , we need to take a similar approach
+And that’s the beauty of it.
+
+With math, we can step beyond our sensory limitations, moving through dimensions that our brains simply can’t directly perceive.
+
+We can use projections to reveal parts of the 4-dimensional world, even if we can’t fully understand .
+
+Each projection will reveal something more about our 4d fractal , similar to how each type of projection of a 3d earth reveals different details about it .
+
+Let's start with a stereographic projection , generally it preserves angles at which curves meet and thus approximately preserves shapes.
+
+So obtained 4d points earlier , we can use the following stereographic projection formula which converts our points into 3 dimensional points 
+<Math formula="x' = \frac{x}{1-w}, \quad y' = \frac{y}{1-w}, \quad z' = \frac{z}{1-w}" block />
+Now that we have tamed the 4-d figure to something we can visualise
+
+Lets repeat the chaos game steps
+
+I got these results
+<Figure src={siera}/>
+<Figure src={sierab}/>
+
+Please feel free to experiment with different shapes , rules and projections methods and explore the world of fractals infinite dimensions
+
+What you are looking at is two 3 dimensional views of a 4 dimensional Sierpinski 5-cell rotated relative to each other , further projected onto your 2d screen
+
+When you look at this fractal, remember: you're not just looking at a shape, but at the hidden beauty extending in theoretically infinite dimensions which we can peek into by seeing the ripples of their majesty in their 3d and 2d projections

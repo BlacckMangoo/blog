@@ -1,0 +1,123 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	updatedDate?: Date;
+	tags?: string[];
+}
+
+const { title, description, pubDate, updatedDate, tags = [] } = Astro.props as Props;
+
+const dateFormatter = new Intl.DateTimeFormat('en', {
+	month: 'long',
+	day: 'numeric',
+	year: 'numeric',
+});
+
+const published = pubDate ? dateFormatter.format(pubDate) : null;
+const updated = updatedDate ? dateFormatter.format(updatedDate) : null;
+---
+
+<Layout title={`${title}`} description={description}>
+	<main class="blog-page">
+		<article class="prose article-shell">
+			<header class="article-header">
+				<a class="back-link" href="/blog">← Blog index</a>
+				<h1>{title}</h1>
+				<p class="lede">{description}</p>
+				<div class="article-meta">
+					{published && <span>Published {published}</span>}
+					{updated && <span>Updated {updated}</span>}
+				</div>
+				{tags.length > 0 && (
+					<ul class="tag-list" aria-label="Post tags">
+						{tags.map((tag: string) => <li>{tag}</li>)}
+					</ul>
+				)}
+			</header>
+			<slot />
+		</article>
+	</main>
+</Layout>
+
+<style>
+	.blog-page {
+		padding: 0 0 2rem;
+	}
+
+	.article-shell {
+		width: min(89ch, 100%);
+		margin: 0 auto;
+	}
+
+	.article-header {
+		margin-bottom: 2.25rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.back-link,
+	.eyebrow,
+	.article-meta,
+	.tag-list {
+		font-family: 'Avenir Next', 'Segoe UI', sans-serif;
+	}
+
+	.back-link {
+		display: inline-flex;
+		margin-bottom: 1rem;
+		color: var(--text-muted);
+	}
+
+	.eyebrow {
+		margin: 0 0 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		font-size: 0.78rem;
+		color: var(--accent);
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(2.5rem, 6vw, 4.6rem);
+		line-height: 0.98;
+	}
+
+	.lede {
+		margin: 1rem 0 0;
+		font-size: 1.08rem;
+		line-height: 1.8;
+		color: var(--text-muted);
+	}
+
+	.article-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 1rem;
+		margin-top: 1rem;
+		font-size: 0.92rem;
+		color: var(--text-muted);
+	}
+
+	.tag-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0;
+		margin: 1rem 0 0;
+		list-style: none;
+	}
+
+	.tag-list li {
+		padding: 0.25rem 0.65rem;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.02);
+		font-size: 0.8rem;
+		letter-spacing: 0.03em;
+		color: var(--text-muted);
+	}
+</style>
