@@ -13,19 +13,18 @@ const { title = 'Note', tone = 'note' } = Astro.props;
 	.callout {
 		margin: 1.75rem 0;
 		padding: 1rem 1.1rem;
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--surface);
-		box-shadow: var(--shadow);
+		border: 1px solid var(--rule-dark);
+		border-left: 4px solid var(--accent);
+		background: transparent;
 	}
 
 	.callout__title {
 		margin: 0 0 0.5rem;
-		font-family: 'Avenir Next', 'Segoe UI', sans-serif;
-		font-size: 0.78rem;
-		letter-spacing: 0.16em;
+		font-family: var(--sans);
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--accent);
+		color: var(--ink);
 	}
 
 	.callout__body :global(p) {
@@ -33,10 +32,11 @@ const { title = 'Note', tone = 'note' } = Astro.props;
 	}
 
 	.callout--warning {
-		border-color: rgba(248, 113, 113, 0.35);
+		border-color: var(--rule-dark);
+		border-left-color: var(--accent);
 	}
 
 	.callout--warning .callout__title {
-		color: #ffb4b4;
+		color: var(--accent);
 	}
 </style>

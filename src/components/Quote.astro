@@ -4,38 +4,14 @@ const { cite } = Astro.props;
 
 <blockquote class="quote">
 	<div class="quote__mark">“</div>
-	<div class="quote__body">
-		<slot />
-	</div>
-	{cite && <footer class="quote__cite">{cite}</footer>}
+	<div class="quote__body"><slot /></div>
+	{cite && <footer class="quote__cite">— {cite}</footer>}
 </blockquote>
 
 <style>
-	.quote {
-		margin: 1.75rem 0;
-		padding: 1.1rem 1.2rem 1rem;
-		border-left: 2px solid var(--accent);
-		border-radius: 0 var(--radius) var(--radius) 0;
-		background: linear-gradient(90deg, rgba(158, 208, 255, 0.08), rgba(255, 255, 255, 0.01));
-		box-shadow: var(--shadow);
-	}
-
-	.quote__mark {
-		font-size: 2rem;
-		line-height: 1;
-		color: var(--accent);
-	}
-
-	.quote__body :global(p) {
-		margin: 0.5rem 0 0;
-		font-size: 1.05rem;
-		line-height: 1.75;
-	}
-
-	.quote__cite {
-		margin-top: 0.75rem;
-		font-family: 'Avenir Next', 'Segoe UI', sans-serif;
-		font-size: 0.9rem;
-		color: var(--text-muted);
-	}
+	.quote { margin: 2rem 0 2rem 2rem; padding: 0.2rem 0 0.2rem 1.3rem; border-left: 2px solid var(--accent); background: transparent; }
+	.quote__mark { height: 1.2rem; color: var(--accent); font-size: 2.2rem; line-height: 1; }
+	.quote__body :global(p) { margin: 0.4rem 0 0; font-size: 1.05rem; line-height: 1.7; }
+	.quote__cite { margin-top: 0.7rem; color: var(--muted); font: 0.75rem var(--sans); font-style: normal; }
+	@media (max-width: 640px) { .quote { margin-left: 0; } }
 </style>

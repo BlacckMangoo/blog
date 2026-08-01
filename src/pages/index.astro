@@ -2,175 +2,71 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const posts: any[] = await getCollection('blog');
-const orderedPosts = posts
-	.filter((post: any) => !post.data.draft)
-	.sort((left: any, right: any) => right.data.pubDate.valueOf() - left.data.pubDate.valueOf());
+const base = import.meta.env.BASE_URL;
+const posts = (await getCollection('blog'))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<Layout title="Graphics Notebook" description="Notes on rendering, shaders, mathematics, and engine development.">
-	<main class="home">
-		<section class="hero">
-			<p class="eyebrow">Rendering / Mathematics / Systems programming</p>
+<Layout title="Graphics Papers — Satvik Gupta" description="Technical essays and interactive experiments in computer graphics.">
+	<main class="journal-index">
+		<header class="masthead">
 			<h1>Satvik Gupta's Blog</h1>
-			<p class="intro">
-				I love graphics programming , math and over thinking about stuff.
-			</p>
-		</section>
+			<div class="masthead-copy">
+				<p>I write about computer graphics , philosophy and random explorations led by my curiosity .</p>
+				<br>
+				<p class="profile-links"><a href="https://github.com/BlacckMangoo">GitHub</a> · <a href="https://blacckmangoo.github.io/myPortfolio/">Portfolio</a> · <a href="https://x.com/satvikk_guptaa">Twitter</a></p>
+			</div>
+		</header>
 
-		<section class="posts">
-			<div class="section-heading">
-				<p>All posts</p>
-			</div>
-			<div class="post-list">
-				{orderedPosts.map((post: any) => (
-					<article class="post-row">
-						<p class="post-card__date">{post.data.pubDate.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-						<h2><a href={`/blog/${post.id.replace(/\.mdx?$/, '')}`}>{post.data.title}</a></h2>
-						<p>{post.data.description}</p>
-						<ul class="tag-list" aria-label="Post tags">
-							{post.data.tags.map((tag: string) => <li>{tag}</li>)}
-						</ul>
-					</article>
+		<section class="index-section" aria-labelledby="papers-heading">
+			
+			<ol class="paper-list">
+				{posts.map((post, index) => (
+					<li>
+						<a href={`${base}${post.id.replace(/\.mdx?$/, '')}`}>
+							<span class="paper-number">{String(index + 1).padStart(2, '0')}</span>
+							<div class="paper-info">
+								<h3>{post.data.title}</h3>
+								<p>{post.data.description}</p>
+								<span class="paper-tags">{post.data.tags.join(' · ')}</span>
+							</div>
+							<time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('en', { month: 'short', year: 'numeric' })}</time>
+						</a>
+					</li>
 				))}
-			</div>
+			</ol>
 		</section>
 	</main>
 </Layout>
 
 <style>
-	.home {
-		padding: 1rem 0 2.5rem;
-	}
-
-	.hero {
-		padding: 3rem 0 4rem;
-		max-width: 72ch;
-	}
-
-	.eyebrow,
-	.section-heading p,
-	.post-card__date,
-	.hero-links,
-	.button,
-	.text-link {
-		font-family: 'Avenir Next', 'Segoe UI', sans-serif;
-	}
-
-	.eyebrow,
-	.section-heading p {
-		margin: 0 0 0.75rem;
-		font-size: 0.78rem;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		color: var(--accent);
-	}
-
-	h1 {
-		margin: 0;
-		font-size: clamp(3rem, 9vw, 6.2rem);
-		line-height: 0.93;
-		letter-spacing: -0.05em;
-	}
-
-	.intro {
-		max-width: 60ch;
-		margin: 1.25rem 0 0;
-		font-size: 1.1rem;
-		line-height: 1.85;
-		color: var(--text-muted);
-	}
-
-	.hero-links {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem 1rem;
-		margin-top: 1.5rem;
-	}
-
-	.button,
-	.text-link {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0.8rem 1.05rem;
-		border-radius: 999px;
-		border: 1px solid var(--border);
-	}
-
-	.button {
-		background: rgba(158, 208, 255, 0.08);
-		color: var(--accent-strong);
-	}
-
-	.text-link {
-		color: var(--text-muted);
-	}
-
-	.posts {
-		padding: 1rem 0 0;
-	}
-
-	.section-heading {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		align-items: baseline;
-		margin-bottom: 1rem;
-	}
-
-	.section-heading span {
-		font-size: 0.95rem;
-		color: var(--text-muted);
-	}
-
-	.post-list {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.post-row {
-		padding: 1.15rem;
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--surface);
-		box-shadow: var(--shadow);
-	}
-
-	.post-row h2 {
-		margin: 0.4rem 0 0;
-		font-size: 1.4rem;
-		line-height: 1.2;
-	}
-
-	.post-row p {
-		margin: 0.8rem 0 0;
-		line-height: 1.75;
-		color: var(--text-muted);
-	}
-
-	.tag-list {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-		padding: 0;
-		margin: 1rem 0 0;
-		list-style: none;
-	}
-
-	.tag-list li {
-		padding: 0.2rem 0.6rem;
-		border-radius: 999px;
-		border: 1px solid rgba(148, 163, 184, 0.16);
-		font-size: 0.78rem;
-		color: var(--text-muted);
-	}
-
+	.journal-index { width: min(1120px, calc(100% - 3rem)); margin: 0 auto; padding: 5rem 0 7rem; }
+	.masthead { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 2rem 5rem; padding-bottom: 4rem; border-bottom: 1px solid var(--rule-dark); }
+	.issue { grid-column: 1 / -1; margin: 0; font: 700 0.82rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+	.masthead h1 { margin: 0; font-size: clamp(4.5rem, 12vw, 9rem); font-weight: 400; line-height: 0.84; letter-spacing: -0.045em; }
+	.masthead-copy { align-self: end; max-width: 34rem; font-size: 1.05rem; line-height: 1.65; }
+	.masthead-copy p { margin: 0; }
+	.masthead-copy .author { margin-top: 1.5rem; color: var(--muted); font: 500 0.86rem var(--sans); }
+	.masthead-copy .profile-links { margin-top: 0.7rem; color: var(--accent); font: 600 0.82rem var(--sans); }
+	.profile-links a { text-decoration: underline; text-underline-offset: 0.16em; }
+	.index-section { padding-top: 4rem; }
+	.index-heading { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 0.65rem; border-bottom: 3px double var(--rule-dark); }
+	.index-heading h2 { margin: 0; font-size: 1.05rem; font-family: var(--sans); letter-spacing: 0.12em; text-transform: uppercase; }
+	.index-heading span { color: var(--muted); font: 600 0.8rem var(--sans); text-transform: uppercase; letter-spacing: 0.08em; }
+	.paper-list { margin: 0; padding: 0; list-style: none; }
+	.paper-list li { border-bottom: 1px solid var(--rule); }
+	.paper-list a { display: grid; grid-template-columns: 3rem 1fr 6rem; gap: 1.5rem; align-items: start; padding: 1.75rem 0; }
+	.paper-number { color: var(--accent); font: 700 0.82rem var(--sans); font-variant-numeric: tabular-nums; }
+	.paper-info h3 { margin: 0; font-size: clamp(1.4rem, 2.5vw, 1.9rem); font-weight: 650; line-height: 1.18; }
+	.paper-info p { max-width: 65ch; margin: 0.55rem 0 0; color: var(--muted); line-height: 1.55; }
+	.paper-tags { display: block; margin-top: 0.8rem; color: var(--accent); font: 650 0.76rem var(--sans); letter-spacing: 0.06em; text-transform: uppercase; }
+	.paper-list time { justify-self: end; color: var(--muted); font: 600 0.78rem var(--sans); text-transform: uppercase; }
 	@media (max-width: 720px) {
-		.section-heading {
-			flex-direction: column;
-			align-items: flex-start;
-		}
+		.journal-index { width: min(100% - 1.5rem, 1120px); padding: 3rem 0 5rem; }
+		.masthead { grid-template-columns: 1fr; gap: 2.5rem; }
+		.masthead h1 { font-size: clamp(4rem, 23vw, 7rem); }
+		.paper-list a { grid-template-columns: 2rem 1fr; gap: 1rem; }
+		.paper-list time { display: none; }
 	}
 </style>

@@ -1,0 +1,71 @@
+---
+title: "Interactive Plot Components"
+description: "Reusable equation, data, and 3D plots inside Astro MDX."
+pubDate: 2026-07-26
+tags: [graphics, mathematics]
+draft: true
+---
+
+import FunctionPlot from "../../components/FunctionPlot.jsx";
+import Plot from "../../components/Plot.jsx";
+
+# Interactive plots
+
+## Equation plots
+
+For continuous , use the lightweight `FunctionPlot` component. It supports direct manipulation without requiring chart configuration boilerplate.
+
+<FunctionPlot
+  client:visible
+  title="Wave functions"
+  functions={[{ fn: "sin(x)" }, { fn: "cos(x)", color: "#58d68d" }]}
+  xDomain={[-8, 8]}
+  caption="Drag to pan and scroll to zoom."
+/>
+
+## Data plots
+
+The general `Plot` component accepts standard Plotly traces. This covers line charts, scatter plots, heat maps, contours, and other experimental data.
+
+<Plot
+  client:visible
+  title="Sampled signal"
+  data={[{ x: [0, 1, 2, 3, 4], y: [0, 1, 4, 9, 16], type: "scatter", mode: "lines+markers" }]}
+  layout={{ xaxis: { title: "x" }, yaxis: { title: "x²" } }}
+/>
+
+## Three-dimensional figures
+
+Three-dimensional traces can be rotated, zoomed, and inspected directly in the article.
+
+<Plot
+  client:visible
+  title="3D helix"
+  data={[{
+    type: "scatter3d",
+    mode: "lines",
+    x: Array.from({ length: 80 }, (_, i) => Math.cos(i / 8)),
+    y: Array.from({ length: 80 }, (_, i) => Math.sin(i / 8)),
+    z: Array.from({ length: 80 }, (_, i) => i / 8),
+    line: { color: "#9ed0ff", width: 6 },
+  }]}
+  layout={{ scene: { aspectmode: "data" } }}
+  caption="Drag to rotate the camera."
+/>
+
+## Code and tabular results
+
+Code blocks and tables use the same restrained typographic system as the figures.
+
+```js
+const project = ([x, y, z], focalLength) => [
+  focalLength * x / z,
+  focalLength * y / z,
+];
+```
+
+| Primitive | Typical use | Dimensionality |
+| --- | --- | ---: |
+| Line | Curves and trajectories | 2D / 3D |
+| Mesh | Surfaces and geometry | 3D |
+| Heat map | Scalar fields | 2D |

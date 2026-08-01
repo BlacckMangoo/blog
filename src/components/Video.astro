@@ -1,0 +1,31 @@
+---
+const {
+	src,
+	caption,
+	label = 'Video',
+	autoplay = true,
+	loop = true,
+	muted = true,
+	controls = true,
+} = Astro.props;
+---
+
+<figure class="video-figure">
+	<video
+		src={src}
+		aria-label={label}
+		autoplay={autoplay}
+		loop={loop}
+		muted={muted}
+		controls={controls}
+		playsinline
+		preload="metadata"
+	/>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+	.video-figure { margin: 2.2rem 0; }
+	video { display: block; width: 100%; height: auto; border: 1px solid var(--rule); background: #111; }
+	figcaption { margin-top: 0.7rem; color: var(--muted); font-size: 0.9rem; font-weight: 500; line-height: 1.55; }
+</style>

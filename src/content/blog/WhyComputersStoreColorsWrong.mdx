@@ -1,0 +1,270 @@
+---
+title: "Why Computers Don't Store Colors Correctly (On Purpose)"
+description: "Understanding UNORM, sRGB, gamma encoding, and the journey from a shader to perceived image from first principles"
+pubDate: 2026-07-14
+tags:
+  - mathematics
+  - colorimetry 
+  - human perception
+  - GPU 
+---
+
+import Latex from "../../components/Math.astro";
+import Callout from "../../components/Callout.astro";
+import Figure from "../../components/Figure.astro";
+import Video from "../../components/Video.astro";
+import cones from "../../assets/cones.webp"
+import emwave from "../../assets/emwave.mp4";
+import spd from "../../assets/OIP.png";
+
+## Lets Start with a Trivial task 
+
+lets say we want to display a image on a screen which displays a smooth gradient from black to white .
+This sounds deceptively simple .
+
+But what does "smooth" actually mean ? 
+Do we need to think about how the human brain percieves light?
+
+this system actually involves a complex interplay between the Computer , the Display hardware , The Human Eye and the Brain .
+Lets use this  small problem as an excuse to  explore the beautiful world of Computer Imaging in Depth . 
+
+
+## Understanding Light and Color 
+
+How do we See stuff ? 
+
+When light reaches an object, some of it may be absorbed or scattered. A portion of the scattered light 
+enters our eyes and reaches the retina, where some special  cells called photoreceptors convert it into neural signals. 
+After substantial processing 
+by the retina and brain, we experience these signals as an image of the world.
+
+We try to reproduce part of this process. If a display produces a sufficiently similar pattern of light,We must trick the 
+brain into interpret it as light coming from a real three-dimensional object—even though it actually comes from a flat screen.
+
+The display is composed of a grid of tiny picture elements called pixels. A typical pixel contains red, green and blue subpixels 
+whose outputs can be controlled independently by programmers.
+But Why 3 subpixels ? 
+and Why Red Green and Blue , why not some other color ? 
+we will try to answer these questions in the future . 
+
+But what exactly is light?
+
+Scientists have developed several models of light, each useful at a different scale. Newton proposed a corpuscular model
+in which light consisted of small particles, while Huygens described light as waves. Geometrical optics abstracts light 
+into rays travelling through space. Maxwell later showed that light can be described as an electromagnetic wave. 
+Modern quantum theory describes light as a quantized electromagnetic field, whose interactions with matter may occur 
+in discrete amounts called photons.
+
+None of these is right or wrong. Each remains useful within a particular domain. Ray optics is excellent for lenses and rendering
+but cannot explain diffraction. Classical electromagnetic theory explains interference and polarization but not every quantum interaction. Quantum optics becomes necessary when the quantization of light matters.
+Each part of this pipeline from emission of light to its perception is a field in itself uses different models of light , 
+different quantities to measure it .In graphics programming we mostly use the following.
+
+1. Electomagnetic Waves 
+2. Radiometry 
+3. Colorimetry and Photometry 
+4. Geometrical Optics 
+
+# EM Waves
+
+in the 19th centry Maxwell unified many theories and modelled light as an Electromagnetic Wave .
+It Described light in terms of Electric and Magnetic fields wave oscillating with the same frequency propogating in the same direction . 
+
+<Latex formula="\mathbf{E}(z,t) = E_0 \cos\left(kz-\omega t+\phi\right)\hat{\mathbf{x}}" />
+here c is the speed of light 
+<Latex formula="\mathbf{B}(z,t) = \frac{E_0}{c}\cos\left(kz-\omega t+\phi\right)\hat{\mathbf{y}}" />
+
+<Video
+  src={emwave}
+  label="Electric and magnetic fields propagating as an electromagnetic wave"
+  caption="The electric and magnetic fields oscillate perpendicular to each other and to the direction of propagation."
+/>
+
+A Em wave that oscillates at a fixed frequency is called a Monochromatic wave .
+Its frequency determines its wavelength <Latex formula="\lambda = c/f"/>
+
+but in nature most  Light is not Monochromatic . at any point in space electric field can consist of oscillations of multiple frequencies 
+Fourier analysis allows this complicated field to be represented as a superposition of sinusoidal components, each with its own frequency, amplitude and phase—much as
+a musical chord can be decomposed into individual notes.
+thus any light wave is a superposition of many such monochrome(single frequency) Em waves . 
+
+link to a great video on : [Fourier analysis](https://www.youtube.com/watch?v=spUNpyF58BY&pp=ygUWRm91cmllciBhbmFseXNpcyAzYjFiIA%3D%3D)
+
+##  Spectral Power Distribution
+
+
+Imagine a ball moving back and forth so rapidly that your eye cannot track its  position. 
+Instead of seeing the ball at one location, you see a blurred region covering the path over which it moves. Similarly,
+the electromagnetic field oscillates much too rapidly for photoreceptors to follow its instantaneous value.
+Their rather respond to energy absorbed over a finite interval rather than each individual oscillation.
+
+This Time Averaged Value is Called the Intensity of Light or Optical Power 
+
+<Latex formula="I=\frac{1}{2}\varepsilon_0 cE_0^2" />
+one intresting fact to note here is that intensity is porportional to square of the Amplitude 
+For Those intrested in how this is derived take a look at this article : [Intensity derivation](https://phys.libretexts.org/Bookshelves/University_Physics/University_Physics_%28OpenStax%29/University_Physics_II_-_Thermodynamics_Electricity_and_Magnetism_%28OpenStax%29/16%3A_Electromagnetic_Waves/16.04%3A_Energy_Carried_by_Electromagnetic_Waves)
+
+When the various frequencies contained in the light are plotted against their corresponding optical power(intensity).
+the resulting function is called the Spectral Power Distribution <Latex formula="S(\lambda)"/> , where <Latex formula="\lambda"/> is wavelength  
+
+<Figure src={spd} caption="spectral power distribution of a light source with color corrected temp = 9325 kelvin "/>
+
+the spectral power distribution contains all info about the light that human eye can percieve and more 
+,ie two different light waves with the same Spectral power distribution are percieved by our eyes as the same .
+
+{/* ## What is Color 
+
+Color is a completely perceptual phenomenon that occurs in the brain , rather than a physical property of light itself 
+The retina contains light-sensitive cells called photoreceptors, broadly classified into rods and cones. The human retina contains roughly 120 million rods and 6 million cones, although they are distributed very unevenly.
+
+Rods are highly sensitive and dominate vision under dim illumination. Humans have only kind of Rod, so rods cannot distinguish
+whether a change in their response was caused by a change in wavelength or simply by a change in the amount of light.
+thus, rod-dominated vision is largely monochromatic.
+
+Cones are less sensitive than rods and primarily operate under brighter conditions. Humans normally possess three classes of cones, called L, M and S cones according to whether their sensitivities peak in the long-, medium- or short-wavelength regions of the visible spectrum. These overlapping sensitivities provide the basis of human colour vision. */}
+
+## What Is Colour?
+
+Colour is not a physical property carried by light in the same way that wavelength or energy is. It is a perceptual experience constructed by the brain in response to light.
+
+The retina contains light-sensitive cells called photoreceptors, classified into rods and cones. The human 
+retina contains roughly 120 million rods and 6 million cones, although they are distributed very unevenly.
+
+Rods are highly sensitive and dominate vision under dim illumination. Humans possess only one class of rod, so the visual system 
+cannot use rods alone to distinguish whether a change in response was caused by a change in wavelength or merely by a change in
+ the amount of light. thus, rod-dominated vision is largely monochromatic.
+
+Cones are less sensitive than rods and operate primarily under brighter conditions. Humans normally possess three classes of cones, called L, M and S cones because their sensitivities peak in the long-, medium- and short-wavelength regions of the visible spectrum. Their broad, overlapping sensitivity curves provide the foundation of human colour vision.
+
+<Figure
+  src={cones}
+/>
+However, L, M and S cones should not be thought of simply as red, green and blue detectors. Each cone class responds to a wide range of wavelengths. For example, both L and M cones respond strongly to much of the light that we perceive as yellow. It is the relative pattern of activity across the three cone classes—not the response of a single cone—that carries colour information.
+
+Each cone class reduces the complete spectral distribution entering it to a single response:
+The contribution of one wavelength interval to the cone’s response is approximately:
+
+<Latex formula="\Delta R_{i,j}=S(\lambda_j)q_i(\lambda_j)\Delta\lambda" />
+
+The total cone response is obtained by adding the contributions from all wavelength intervals:
+
+<Latex formula="R_i\approx\sum_{j=1}^{N}S(\lambda_j)q_i(\lambda_j)\Delta\lambda" />
+
+<Latex formula="R_i=\int S(\lambda)q_i(\lambda)\,d\lambda" />
+
+Here, <Latex formula="S(\lambda)" /> is the spectral distribution of the incoming light and <Latex formula="q_i(\lambda)" /> is
+ the sensitivity of cone class.
+ 
+The complete spectrum is therefore reduced to approximately three numbers:<Latex formula="(R_L,R_M,R_S)" /> 
+
+The brain obtains colour information by comparing the responses of the three cone classes. A light that stimulates L cones considerably more than M cones may produce a reddish experience, while a light that stimulates L and M cones strongly but S cones only weakly may appear yellow. These examples are simplified because later neural processing, adaptation and surrounding colours also influence the final experience.
+
+It is tempting to identify every colour with a wavelength, but this only works for some colours produced by monochromatic light.
+
+There is no single wavelength corresponding to white. White normally results from a broad mixture of wavelengths or from any spectrum that produces an appropriately balanced cone response. Similarly, colours such as magenta do not correspond to a single wavelength. Magenta can be produced by stimulating the L and S cones strongly while stimulating the M cones less.
+
+Wavelength is therefore a physical property of a monochromatic wave, whereas colour is a perceptual interpretation of the responses produced by light.
+
+Because the eye compresses an entire spectral distribution into three cone responses, much of the original spectral information is lost. Two physically different spectra can therefore produce the same three cone responses:
+
+<Latex formula="S_1(\lambda)\neq S_2(\lambda)" />
+
+while:
+
+<Latex formula="(R_{L1},R_{M1},R_{S1})=(R_{L2},R_{M2},R_{S2})" />
+
+Such spectral distributions are called **metamers**.
+
+For example, a nearly monochromatic yellow light and a mixture of red and green light can have very different spectral power distributions yet appear to have the same colour. They do not contain the same physical light; they merely produce sufficiently similar responses in our three cone classes.
+
+Metamerism is the fundamental reason an RGB display works. A display does not reproduce the complete spectrum that would have arrived from a real object. Instead, it adjusts the strengths of three primary lights so that their mixture produces approximately the same cone responses:
+
+<Latex formula="S_{\text{display}}(\lambda)=rP_R(\lambda)+gP_G(\lambda)+bP_B(\lambda)" />
+
+Here, (P_R), (P_G) and (P_B) are the spectra emitted by the display’s three primaries. The coefficients (r), (g) and (b) control their relative strengths.
+
+RGB therefore works not because light is fundamentally composed of red, green and blue, but because ordinary human colour vision is approximately trichromatic.
+
+### Do objects possess colour?
+
+A surface has physical properties such as its spectral reflectance:
+
+<Latex formula="\rho(\lambda)=\frac{\text{reflected spectral power}}{\text{incident spectral power}}" />
+
+The light leaving a surface depends both on this reflectance and on the spectrum of the illumination:
+
+<Latex formula="S_{\text{reflected}}(\lambda)=S_{\text{illumination}}(\lambda)\rho(\lambda)" />
+
+The same object can therefore send different spectra toward the eye under sunlight, fluorescent lighting and candlelight. Nevertheless, we often perceive its colour as relatively stable. A white sheet usually continues to look white even when the spectrum illuminating it changes substantially.
+
+This phenomenon is called **colour constancy**. The brain attempts to separate the properties of the illumination from those of the surface. It does not simply assign a colour directly from the light at one retinal location; it interprets that light using the surrounding scene, previous adaptation and assumptions about illumination.
+
+For this reason, it is convenient to say that an object “is red,” but a more physically precise statement is that the object has a particular spectral reflectance which, under particular illumination and viewing conditions, commonly produces a red colour experience.
+
+### Colour is not determined by cones alone
+
+Signals from the cones undergo extensive processing in the retina and brain. The visual system compares cone responses through approximately opponent channels:
+
+* light versus dark,
+* red versus green,
+* blue versus yellow.
+
+This helps explain why red and green behave as perceptual opponents and why we do not ordinarily experience a colour that is simultaneously reddish and greenish in the same location.
+
+Colour also depends on:
+
+* the surrounding colours,
+* the intensity and spectrum of illumination,
+* the viewer’s adaptation,
+* the size and location of the stimulus,
+* individual differences in cone sensitivities,
+* and the brain’s interpretation of the scene.
+
+The same physical light can therefore appear different in different contexts, while different physical lights can appear identical.
+
+A useful way to summarize the process is:
+
+<Latex formula="\text{illumination}\rightarrow\text{surface interaction}\rightarrow S(\lambda)\rightarrow(L,M,S)\rightarrow\text{neural processing}\rightarrow\text{colour experience}" />
+
+Colour is thus neither simply “inside the light” nor detached from the physical world. It is the visual system’s representation of information inferred from light. Physical spectra provide the stimulus, photoreceptors reduce that stimulus to neural responses, and the brain turns those responses into the colours that structure our visual experience.
+
+The way  power is controlled depends on the display technology:
+CRT: Electron beam current controls how brightly the phosphor glows.
+LCD (IPS, VA, TN): The backlight is always on, and each liquid crystal subpixel acts like a  shutter, letting more or less light through a red, green, or blue filter.
+OLED: Each subpixel is an individual light-emitting diode, and the current through it determines how much light it emits.
+
+<Latex formula="L \propto V^{\gamma} \quad " /> , where <Latex formula="{\gamma = 2.2 }" /> which was the natural response in old CRT monitors , and modern displays try to enginner their displays to maintain a simmiliar response function 
+
+Despite these different mechanisms, from the programmer's perspective each subpixel behaves like a device whose emitted luminance can be varied over a continuous range.
+
+one way(the most obvious) we could  represent our gradient image these  numbers is, say 0 corresponds to no color and 1.0 corresponds to max brightnes
+and you just linearly interpolate the values between them . 
+so the number n corresponding to column i 
+
+<Latex formula=" n = \frac{i}{\text{no of pixels in one row}} =\frac{i}{\text{1000}} " />
+
+
+now the astute readers may have noticed why linearly interpolating from 0-1 was a bad idea,If you look at the three equations 
+ the relations between L and V is non linear . 
+
+modern display manufacturers design their displays to give same L-V response as old CRT monitors to maintain consistency so us software engineers never need to wory about 
+what kind of display our program will run on and can assume a standardised transfer function . 
+
+aggregarte sum of this light emitted from 1000s of these sub pixels enters our eyes , and tricks are brain into believing an Object is being display on 
+the monitor.remember we wanted to convey a smooth linear gradient from black to white . 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
